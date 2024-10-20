@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trip-Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to Trip-Tracker</h1>
+    <h3>🏔🚴‍♀️⌚️🚴🏾🧭🚴🏼📱🚴🏿‍♀️📊</h3>
+    <p>Track your trips and manage your travel information!</p>
+  </div>
+
+  <div class="trip-section">
+    <h2>Your Trips</h2>
+    <ul id="trip-list">
+      <!-- Trip data will be dynamically loaded here -->
+    </ul>
+
+    <!-- Form to Add a New Trip -->
+    <h3>Add a New Trip</h3>
+    <form id="addTripForm">
+      <label for="start_station_name">Start Station</label>
+      <input type="text" name="start_station_name" id="start_station_name" required>
+
+      <label for="end_station_name">End Station</label>
+      <input type="text" name="end_station_name" id="end_station_name" required>
+
+      <label for="tripduration">Duration (minutes)</label>
+      <input type="number" name="tripduration" id="tripduration" required>
+
+      <button type="submit">Add Trip</button>
+    </form>
+  </div>
+
+  <script>
+    // Fetch and display trips on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/api/trips');
+        const trips = await response.json();
+
+        const tripList = document.getElementById('trip-list');
+        trips.forEach(trip => {
+          const tripItem = document.createElement('li');
+          tripItem.textContent = `Start Station: ${trip.start_station_name} to End Station: ${trip.end_station_name} (Duration: ${trip.tripduration} minutes)`;
+
+          // Add delete button
+          const deleteButton = document.createElement('button');
+          deleteButton.textContent = 'Delete';
+          deleteButton.onclick = () => deleteTrip(trip.start_station_name, trip.end_station_name);
+          tripItem.appendChild(deleteButton);
+
+          tripList.appendChild(tripItem);
+        });
+      } catch (error) {
+        console.error('Error fetching trips:', error);
+      }
+    });
+
+    // Listen to form submission
+    document.getElementById('addTripForm').addEventListener('submit', async (e) => {
+      e.preventDefault(); // Prevent form from reloading the page
+
+      // Get the form data
+      const formData = new FormData(e.target);
+      const tripData = {
+        start_station_name: formData.get('start_station_name'),
+        end_station_name: formData.get('end_station_name'),
+        tripduration: formData.get('tripduration'),
+      };
+
+      try {
+        // Send a POST request to the server to add a new trip
+        const response = await fetch('/api/trips', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(tripData),
+        });
+
+        if (response.ok) {
+          const newTrip = await response.json();
+
+          // Dynamically update the trip list with the new trip
+          const tripList = document.getElementById('trip-list');
+          const newTripItem = document.createElement('li');
+          newTripItem.textContent = `Start Station: ${newTrip.start_station_name} to End Station: ${newTrip.end_station_name} (Duration: ${newTrip.tripduration} minutes)`;
+
+          // Add delete button
+          const deleteButton = document.createElement('button');
+          deleteButton.textContent = 'Delete';
+          deleteButton.onclick = async () => {
+            await fetch(`/api/trips/delete`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                start_station_name: newTrip.start_station_name,
+                end_station_name: newTrip.end_station_name,
+              }),
+            });
+            tripList.removeChild(newTripItem); // Remove from UI
+          };
+
+          newTripItem.appendChild(deleteButton);
+          tripList.appendChild(newTripItem); // Append new trip to the list
+        } else {
+          alert('Failed to add trip');
+        }
+      } catch (error) {
+        console.error('Error adding trip:', error);
+      }
+    });
+
+    // JavaScript function to delete a trip
+    async function deleteTrip(startStation, endStation) {
+      try {
+        const response = await fetch('/api/trips/delete', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            start_station_name: startStation,
+            end_station_name: endStation,
+          }),
+        });
+
+        if (response.ok) {
+          alert('Trip deleted successfully');
+          window.location.reload(); // Reload the page to show updated trips
+        } else {
+          alert('Failed to delete trip');
+        }
+      } catch (error) {
+        console.error('Error deleting trip:', error);
+      }
+    }
+  </script>
+</body>
+</html>
+
+
+
+

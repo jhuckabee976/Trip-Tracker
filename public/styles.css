@@ -1,0 +1,98 @@
+body {
+    background-image: url('/pexels-ahshea1-media-317904-2361102-multiple-bicyclist.jpg');
+    background-size: cover;
+    background-position: center bottom;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+/* Style the container */
+.container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+h1 {
+    color: #27d44abd;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #27d44abd;
+}
+
+
+/* Trip Section Flexbox Styling */
+.trip-section {
+    margin-top: 40px;
+    padding: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 50%;
+}
+
+/* Ensure labels and text are white */
+.trip-section h2, .trip-section h3, #trip-list li {
+    color: white; /* Makes "Your Trips", "Add a New Trip" and trip details white */
+}
+
+.trip-section label {
+    color: white;
+    display: block;
+    margin-top: 10px;
+}
+
+/* Adjusting the input fields and button sizes */
+.trip-section input, .trip-section button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.trip-section button {
+    background-color: #27d44a; /* Keeps the green button */
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.trip-section button:hover {
+    background-color: #1f9c39;
+}
+
+/* Styling for Trip List */
+ul#trip-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+ul#trip-list li {
+    margin-bottom: 10px;
+}
+
+/* Keeping the Delete Button styling */
+ul#trip-list button {
+    background-color: #27d44a;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+ul#trip-list button:hover {
+    background-color: #1f9c39;
+}
